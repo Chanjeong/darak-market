@@ -1,15 +1,13 @@
 export default function Home() {
   return (
-    <main className="bg-gray-100 h-screen flex items-center justify-center p-5 ">
+    <main className="bg-gray-100 h-screen flex items-center justify-center p-5 sm:bg-red-100">
       <div className="bg-white w-full shadow-lg rounded-3xl p-5 max-w-screen-sm flex flex-col gap-3">
-        <input
-          className="bg-gray-200 h-12 w-full rounded-full pl-5 outline-none ring ring-transparent focus:ring-orange-500 focus:ring-offset-2 transition-shadow placeholder:drop-shadow"
-          type="text"
-          placeholder="Search here..."
-        />
-        <button className="bg-black py-2 text-white rounded-full active:scale-90 outline-none transition-transform font-medium">
-          Search
-        </button>
+        <div className="flex flex-col *:outline-none group">
+          <input/>
+          <input className="w-full mt-5 bg-gray-300 rounded-xl px-5 invalid:ring-red-500 invalid:ring" type="email" required placeholder="Write your email"/>
+          <span className="group-hover:block hidden">Make sure it is a valid email</span>
+          <button >Submit</button>
+        </div>
       </div>
     </main>
   );
