@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  a {
+    @apply text-amber-800;
+  }
+}
+
+@layer components {
+  .primary-btn {
+    @apply bg-amber-900 text-white text-lg font-medium w-full
+         text-center rounded-md hover:bg-amber-800 transition-colors;
+  }
+}
