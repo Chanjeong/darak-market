@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-between min-h-screen">
       <div className="my-auto flex flex-col items-center">
-        <span className="text-9xl">🥖</span>
+        <span className="text-9xl animate-bounce">🥖</span>
         <h1 className="text-4xl font-bold">다락</h1>
         <h2 className="text-2xl">다락 마켓에 어서오세요!</h2>
       </div>

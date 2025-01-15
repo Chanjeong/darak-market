@@ -10,15 +10,24 @@ export default function page() {
         <h1 className="text-xl">회원가입</h1>
       </div>
       <form className="flex flex-col gap-3">
-        <FormInput name="username" type="text" placeholder="사용자 이름" required errors={['']} />
-        <FormInput name="email" type="email" placeholder="이메일" required errors={['']} />
-        <FormInput name="password" type="password" placeholder="비밀번호" required errors={['']} />
         <FormInput
-          name="passwordConfirm"
+          name="username"
+          type="text"
+          placeholder="사용자 이름"
+          required
+        />
+        <FormInput name="email" type="email" placeholder="이메일" required />
+        <FormInput
+          name="password"
+          type="password"
+          placeholder="비밀번호"
+          required
+        />
+        <FormInput
+          name="password_confirm"
           type="password"
           placeholder="비밀번호 확인"
           required
-          errors={['']}
         />
         <FormButton text="회원가입" />
       </form>

@@ -8,13 +8,17 @@ export default function SMSLogin() {
         <h1 className="text-xl">SMS 로그인</h1>
       </div>
       <form className="flex flex-col gap-3">
-        <FormInput name="phoneNumber" type="number" placeholder="전화번호" required errors={['']} />
         <FormInput
-          name="verificationCode"
+          name="phone_number"
+          type="number"
+          placeholder="전화번호"
+          required
+        />
+        <FormInput
+          name="verification_code"
           type="number"
           placeholder="인증번호"
           required
-          errors={['']}
         />
         <FormButton text="인증번호 전송" />
       </form>
