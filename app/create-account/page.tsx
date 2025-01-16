@@ -1,35 +1,48 @@
-import FormButton from '@/components/form-button';
-import FormInput from '@/components/form-input';
-import SocialLogin from '@/components/social-login';
+'use client';
 
-export default function page() {
+import Input from '@/components/input';
+import SocialLogin from '@/components/social-login';
+import { useActionState } from 'react';
+import { createAccount } from './createAccount';
+import Button from '@/components/button';
+export default function CreateAccount() {
+  const [state, dispatch] = useActionState(createAccount, null);
+
   return (
     <div className="flex flex-col gap-10 px-6 py-8">
       <div className="flex flex-col gap-2 *:font-medium">
-        <h1 className="text-2xl">안녕하세요!</h1>
         <h1 className="text-xl">회원가입</h1>
       </div>
-      <form className="flex flex-col gap-3">
-        <FormInput
+      <form action={dispatch} className="flex flex-col gap-3">
+        <Input
           name="username"
           type="text"
           placeholder="사용자 이름"
           required
+          errors={state?.fieldErrors.username}
         />
-        <FormInput name="email" type="email" placeholder="이메일" required />
-        <FormInput
+        <Input
+          name="email"
+          type="email"
+          placeholder="이메일"
+          required
+          errors={state?.fieldErrors.email}
+        />
+        <Input
           name="password"
           type="password"
           placeholder="비밀번호"
           required
+          errors={state?.fieldErrors.password}
         />
-        <FormInput
+        <Input
           name="password_confirm"
           type="password"
           placeholder="비밀번호 확인"
           required
+          errors={state?.fieldErrors.password_confirm}
         />
-        <FormButton text="회원가입" />
+        <Button text="회원가입" />
       </form>
       <SocialLogin />
     </div>
