@@ -8,6 +8,7 @@ import {
   REQUIRED_ERROR,
   TYPE_ERROR
 } from '@/lib/constants';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 const checkPassword = ({
@@ -66,6 +67,6 @@ export async function createAccount(prevState: any, formData: FormData) {
       data: data
     };
   } else {
-    console.log(result.data);
+    redirect('/');
   }
 }
