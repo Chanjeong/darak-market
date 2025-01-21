@@ -8,8 +8,23 @@ import {
   REQUIRED_ERROR,
   TYPE_ERROR
 } from '@/lib/constants';
+import db from '@/lib/db';
 import { redirect } from 'next/navigation';
+import bcrypt from 'bcrypt';
 import { z } from 'zod';
+import getSession from '@/lib/session';
+
+const checkEmailExists = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email
+    },
+    select: {
+      id: true
+    }
+  });
+  return Boolean(user);
+};
 
 const formSchema = z.object({
   email: z
@@ -18,7 +33,8 @@ const formSchema = z.object({
       required_error: REQUIRED_ERROR
     })
     .email(TYPE_ERROR)
-    .toLowerCase(),
+    .toLowerCase()
+    .refine(checkEmailExists, '존재하지 않는 값입니다.'),
   password: z
     .string({
       invalid_type_error: TYPE_ERROR,
@@ -33,7 +49,7 @@ export async function login(prevState: any, formData: FormData) {
     email: formData.get('email'),
     password: formData.get('password')
   };
-  const result = formSchema.safeParse(data);
+  const result = await formSchema.safeParseAsync(data);
 
   if (!result.success) {
     return {
@@ -41,6 +57,35 @@ export async function login(prevState: any, formData: FormData) {
       data: data
     };
   } else {
-    redirect('/');
+    const user = await db.user.findUnique({
+      where: {
+        email: result.data.email
+      },
+      select: {
+        password: true,
+        id: true
+      }
+    });
+    const good = await bcrypt.compare(
+      result.data.password,
+      user!.password ?? ''
+    );
+
+    if (good) {
+      const session = await getSession();
+      session.id = user!.id;
+      await session.save();
+      redirect('/profile');
+    } else {
+      return {
+        error: {
+          fieldErrors: {
+            password: ['잘못된 비밀번호입니다'],
+            email: []
+          }
+        },
+        data: data
+      };
+    }
   }
 }

@@ -13,6 +13,7 @@ import db from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import getSession from '@/lib/session';
 
 const checkPassword = ({
   password,
@@ -97,7 +98,7 @@ export async function createAccount(prevState: any, formData: FormData) {
     };
   } else {
     const hashedPassword = await bcrypt.hash(result.data.password, 12);
-    await db.user.create({
+    const user = await db.user.create({
       data: {
         username: result.data.username,
         email: result.data.email,
@@ -107,5 +108,8 @@ export async function createAccount(prevState: any, formData: FormData) {
         id: true
       }
     });
+    const session = await getSession();
+    session.id = user.id;
+    await session.save();
   }
 }
