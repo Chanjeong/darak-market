@@ -1,6 +1,7 @@
 'use server';
 
 import {
+  CHECKUNIQUE,
   PASSWORD_MIN,
   PASSWORD_MIN_ERROR,
   PASSWORD_REGEX,
@@ -8,6 +9,7 @@ import {
   REQUIRED_ERROR,
   TYPE_ERROR
 } from '@/lib/constants';
+import db from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
@@ -19,6 +21,30 @@ const checkPassword = ({
   password_confirm: string;
 }) => password === password_confirm;
 
+const checkUsernameUnique = async (username: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      username
+    },
+    select: {
+      id: true
+    }
+  });
+  return !Boolean(user);
+};
+
+const checkEmailUnique = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email
+    },
+    select: {
+      id: true
+    }
+  });
+  return !Boolean(user);
+};
+
 const formSchema = z
   .object({
     username: z
@@ -28,18 +54,20 @@ const formSchema = z
       })
       .min(2, '최소 2자 이상 입력해주세요.')
       .max(20, '최대 20자까지만 입력 가능합니다.')
+      .trim()
       .regex(
         /^[a-zA-Z0-9가-힣\s]*$/,
         '사용자 이름에 특수문자는 사용할 수 없습니다.'
       )
-      .trim(),
+      .refine(checkUsernameUnique, CHECKUNIQUE),
     email: z
       .string({
         invalid_type_error: TYPE_ERROR,
         required_error: REQUIRED_ERROR
       })
       .email(TYPE_ERROR)
-      .toLowerCase(),
+      .toLowerCase()
+      .refine(checkEmailUnique, CHECKUNIQUE),
     password: z
       .string()
       .min(PASSWORD_MIN, PASSWORD_MIN_ERROR)
@@ -59,7 +87,7 @@ export async function createAccount(prevState: any, formData: FormData) {
     password_confirm: formData.get('password_confirm')
   };
 
-  const result = formSchema.safeParse(data);
+  const result = await formSchema.safeParseAsync(data);
 
   if (!result.success) {
     return {
