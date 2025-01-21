@@ -12,6 +12,7 @@ import {
 import db from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import bcrypt from 'bcrypt';
 
 const checkPassword = ({
   password,
@@ -95,6 +96,16 @@ export async function createAccount(prevState: any, formData: FormData) {
       data: data
     };
   } else {
-    redirect('/');
+    const hashedPassword = await bcrypt.hash(result.data.password, 12);
+    await db.user.create({
+      data: {
+        username: result.data.username,
+        email: result.data.email,
+        password: hashedPassword
+      },
+      select: {
+        id: true
+      }
+    });
   }
 }
