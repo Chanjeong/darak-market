@@ -7,13 +7,17 @@ export default function SocialLogin() {
     <>
       <div className="w-full h-px bg-neutral-500" />
       <div className="flex flex-col gap-3">
-        <Link href="/sms" className="primary-btn h-10 gap-2 flex items-center justify-center">
+        <Link
+          href="/github/start"
+          className="primary-btn h-10 gap-2 flex items-center justify-center">
           <span>
             <FaGithub className="size-5" />
           </span>
           <span>Signup with Github</span>
         </Link>
-        <Link href="/sms" className="primary-btn h-10 gap-2 flex items-center justify-center">
+        <Link
+          href="/sms"
+          className="primary-btn h-10 gap-2 flex items-center justify-center">
           <span>
             <ChatBubbleOvalLeftEllipsisIcon className="size-5" />
           </span>
