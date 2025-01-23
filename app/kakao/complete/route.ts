@@ -1,0 +1,89 @@
+import db from '@/lib/db';
+import getSession from '@/lib/session';
+import { handleUserSession } from '@/lib/userSessionHandler';
+import { notFound, redirect } from 'next/navigation';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  const code = request.nextUrl.searchParams.get('code');
+  if (!code) {
+    notFound();
+  }
+
+  const accessTokenParams = new URLSearchParams({
+    client_id: process.env.KAKAO_CLIENT_ID!,
+    client_secret: process.env.KAKAO_CLIENT_SECRET!,
+    redirect_uri: process.env.KAKAO_REDIRECT_URL!,
+    grant_type: 'authorization_code',
+    code
+  }).toString();
+  const { error, access_token } = await (
+    await fetch(`https://kauth.kakao.com/oauth/token?${accessTokenParams}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+  ).json();
+  if (error) {
+    return new Response(null, { status: 400 });
+  }
+
+  const {
+    id,
+    properties: { nickname, profile_image }
+  } = await (
+    await fetch('https://kapi.kakao.com/v2/user/me', {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-type': 'application/x-www-form-urlencoded'
+      }
+    })
+  ).json();
+
+  const user = await db.user.findUnique({
+    where: {
+      kakao_id: String(id)
+    },
+    select: {
+      id: true
+    }
+  });
+  if (user) {
+    await handleUserSession(user.id);
+  } else {
+    const newUser = await db.user.findUnique({
+      where: {
+        username: nickname
+      },
+      select: {
+        id: true
+      }
+    });
+    if (newUser) {
+      const newUsernameUser = await db.user.create({
+        data: {
+          kakao_id: String(id),
+          username: `${nickname}_카카오`,
+          avatar: profile_image
+        },
+        select: {
+          id: true
+        }
+      });
+      await handleUserSession(newUsernameUser.id);
+    } else {
+      const correctUser = await db.user.create({
+        data: {
+          kakao_id: String(id),
+          username: nickname,
+          avatar: profile_image
+        },
+        select: {
+          id: true
+        }
+      });
+      await handleUserSession(correctUser.id);
+    }
+  }
+}

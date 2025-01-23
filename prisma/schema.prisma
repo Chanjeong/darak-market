@@ -14,6 +14,8 @@ model User {
   phone      String?    @unique
   password   String?
   github_id  String?    @unique
+  naver_id   String?    @unique
+  kakao_id   String?    @unique
   avatar     String?    @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp")
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt

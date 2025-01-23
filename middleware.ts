@@ -10,8 +10,10 @@ const availablePages: PageProps = {
   '/create-account': true,
   '/login': true,
   '/sms': true,
-  '/github/start': true,
-  '/github/complete': true
+  '/naver/start': true,
+  '/naver/complete': true,
+  '/kakao/start': true,
+  '/kakao/complete': true
 };
 
 export default async function middleware(request: NextRequest) {
