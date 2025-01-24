@@ -1,6 +1,6 @@
 import db from '@/lib/db';
+import { fetchAccessToken, fetchUserProfile } from '@/lib/oauth';
 import { handleUserSession } from '@/lib/userSessionHandler';
-import { notFound } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -8,24 +8,18 @@ export async function GET(request: NextRequest) {
   const state = request.nextUrl.searchParams.get('state')!;
 
   if (!code) {
-    notFound();
+    return new Response(null, { status: 400 });
   }
-
-  const accessTokenParams = new URLSearchParams({
-    client_id: process.env.NAVER_CLIENT_ID!,
-    client_secret: process.env.NAVER_CLIENT_SECRET!,
-    grant_type: 'authorization_code',
-    code,
-    state
-  }).toString();
-  const { error, access_token } = await (
-    await fetch(`https://nid.naver.com/oauth2.0/token?${accessTokenParams}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    })
-  ).json();
+  const { error, access_token } = await fetchAccessToken(
+    'https://nid.naver.com/oauth2.0/token',
+    {
+      client_id: process.env.NAVER_CLIENT_ID!,
+      client_secret: process.env.NAVER_CLIENT_SECRET!,
+      grant_type: 'authorization_code',
+      code,
+      state
+    }
+  );
 
   if (error) {
     return new Response(null, { status: 400 });
@@ -33,14 +27,10 @@ export async function GET(request: NextRequest) {
 
   const {
     response: { id, profile_image, name }
-  } = await (
-    await fetch('https://openapi.naver.com/v1/nid/me', {
-      headers: {
-        Authorization: `Bearer ${access_token}`
-      },
-      cache: 'no-cache'
-    })
-  ).json();
+  } = await fetchUserProfile(
+    'https://openapi.naver.com/v1/nid/me',
+    access_token
+  );
 
   const user = await db.user.findUnique({
     where: {

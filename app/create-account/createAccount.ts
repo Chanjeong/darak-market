@@ -10,10 +10,9 @@ import {
   TYPE_ERROR
 } from '@/lib/constants';
 import db from '@/lib/db';
-import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
-import getSession from '@/lib/session';
+import { handleUserSession } from '@/lib/userSessionHandler';
 
 const checkPassword = ({
   password,
@@ -108,8 +107,6 @@ export async function createAccount(prevState: any, formData: FormData) {
         id: true
       }
     });
-    const session = await getSession();
-    session.id = user.id;
-    await session.save();
+    await handleUserSession(user.id);
   }
 }

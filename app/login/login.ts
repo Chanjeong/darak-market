@@ -9,10 +9,9 @@ import {
   TYPE_ERROR
 } from '@/lib/constants';
 import db from '@/lib/db';
-import { redirect } from 'next/navigation';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-import getSession from '@/lib/session';
+import { handleUserSession } from '@/lib/userSessionHandler';
 
 const checkEmailExists = async (email: string) => {
   const user = await db.user.findUnique({
@@ -72,10 +71,7 @@ export async function login(prevState: any, formData: FormData) {
     );
 
     if (good) {
-      const session = await getSession();
-      session.id = user!.id;
-      await session.save();
-      redirect('/profile');
+      await handleUserSession(user!.id);
     } else {
       return {
         error: {

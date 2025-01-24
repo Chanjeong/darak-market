@@ -1,30 +1,25 @@
 import db from '@/lib/db';
-import getSession from '@/lib/session';
+import { fetchAccessToken, fetchUserProfile } from '@/lib/oauth';
 import { handleUserSession } from '@/lib/userSessionHandler';
-import { notFound, redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
   if (!code) {
-    notFound();
+    return new Response(null, { status: 400 });
   }
 
-  const accessTokenParams = new URLSearchParams({
-    client_id: process.env.KAKAO_CLIENT_ID!,
-    client_secret: process.env.KAKAO_CLIENT_SECRET!,
-    redirect_uri: process.env.KAKAO_REDIRECT_URL!,
-    grant_type: 'authorization_code',
-    code
-  }).toString();
-  const { error, access_token } = await (
-    await fetch(`https://kauth.kakao.com/oauth/token?${accessTokenParams}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    })
-  ).json();
+  const { error, access_token } = await fetchAccessToken(
+    'https://kauth.kakao.com/oauth/token',
+    {
+      client_id: process.env.KAKAO_CLIENT_ID!,
+      client_secret: process.env.KAKAO_CLIENT_SECRET!,
+      redirect_uri: process.env.KAKAO_REDIRECT_URL!,
+      grant_type: 'authorization_code',
+      code
+    }
+  );
+
   if (error) {
     return new Response(null, { status: 400 });
   }
@@ -32,14 +27,11 @@ export async function GET(request: NextRequest) {
   const {
     id,
     properties: { nickname, profile_image }
-  } = await (
-    await fetch('https://kapi.kakao.com/v2/user/me', {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        'Content-type': 'application/x-www-form-urlencoded'
-      }
-    })
-  ).json();
+  } = await fetchUserProfile(
+    'https://kapi.kakao.com/v2/user/me',
+    access_token,
+    { 'Content-type': 'application/x-www-form-urlencoded' }
+  );
 
   const user = await db.user.findUnique({
     where: {
