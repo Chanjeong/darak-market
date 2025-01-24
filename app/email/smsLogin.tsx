@@ -5,8 +5,8 @@ import crypto from 'crypto';
 import { redirect } from 'next/navigation';
 import { REQUIRED_ERROR, TYPE_ERROR } from '@/lib/constants';
 import db from '@/lib/db';
-import getSession from '@/lib/session';
 import { handleUserSession } from '@/lib/userSessionHandler';
+import { sendVerificationEmail } from '@/lib/verificationEmail';
 
 const tokenExists = async (token: number) => {
   const exists = await db.sMSToken.findUnique({
@@ -19,12 +19,11 @@ const tokenExists = async (token: number) => {
   return Boolean(exists);
 };
 
-const phoneSchema = z
-  .string({
-    required_error: REQUIRED_ERROR
-  })
+const emailSchema = z
+  .string({ required_error: REQUIRED_ERROR })
   .trim()
-  .refine(phone => validator.isMobilePhone(phone, 'ko-KR'), TYPE_ERROR);
+  .refine(email => validator.isEmail(email), TYPE_ERROR);
+
 const tokenSchema = z.coerce
   .number({ message: TYPE_ERROR, required_error: REQUIRED_ERROR })
   .min(100000, TYPE_ERROR)
@@ -53,41 +52,43 @@ const getToken = async () => {
 };
 
 export async function smsLogin(prevState: ActionState, formData: FormData) {
-  const phoneData = formData.get('phone');
+  const emailData = formData.get('email');
   const tokenData = formData.get('token');
 
   if (!prevState.token) {
-    const result = phoneSchema.safeParse(phoneData);
+    const result = emailSchema.safeParse(emailData);
     if (!result.success) {
       return {
         token: false,
-        phoneData,
+        emailData,
         errors: result.error.flatten()
       };
     } else {
       await db.sMSToken.deleteMany({
         where: {
           user: {
-            phone: result.data
+            email: result.data
           }
         }
       });
+      const token = await getToken();
       await db.sMSToken.create({
         data: {
-          token: await getToken(),
+          token,
           user: {
             connectOrCreate: {
               where: {
-                phone: result.data
+                email: result.data
               },
               create: {
                 username: crypto.randomBytes(10).toString('hex'),
-                phone: result.data
+                email: result.data
               }
             }
           }
         }
       });
+      await sendVerificationEmail(result.data, token);
       return {
         token: true
       };

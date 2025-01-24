@@ -13,6 +13,7 @@ import db from '@/lib/db';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import { handleUserSession } from '@/lib/userSessionHandler';
+import { redirect } from 'next/navigation';
 
 const checkPassword = ({
   password,
@@ -108,5 +109,6 @@ export async function createAccount(prevState: any, formData: FormData) {
       }
     });
     await handleUserSession(user.id);
+    redirect('/profile');
   }
 }

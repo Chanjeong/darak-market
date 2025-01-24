@@ -12,6 +12,7 @@ import db from '@/lib/db';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import { handleUserSession } from '@/lib/userSessionHandler';
+import { redirect } from 'next/navigation';
 
 const checkEmailExists = async (email: string) => {
   const user = await db.user.findUnique({
@@ -72,6 +73,7 @@ export async function login(prevState: any, formData: FormData) {
 
     if (good) {
       await handleUserSession(user!.id);
+      redirect('/profile');
     } else {
       return {
         error: {

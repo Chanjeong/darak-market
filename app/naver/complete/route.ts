@@ -1,6 +1,7 @@
 import db from '@/lib/db';
 import { fetchAccessToken, fetchUserProfile } from '@/lib/oauth';
 import { handleUserSession } from '@/lib/userSessionHandler';
+import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -42,6 +43,7 @@ export async function GET(request: NextRequest) {
   });
   if (user) {
     await handleUserSession(user.id);
+    redirect('/profile');
   } else {
     const newUser = await db.user.findUnique({
       where: {
@@ -63,6 +65,7 @@ export async function GET(request: NextRequest) {
         }
       });
       await handleUserSession(newUsernameUser.id);
+      redirect('/profile');
     } else {
       const correctUser = await db.user.create({
         data: {
@@ -75,6 +78,7 @@ export async function GET(request: NextRequest) {
         }
       });
       await handleUserSession(correctUser.id);
+      redirect('/profile');
     }
   }
 }

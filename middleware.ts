@@ -9,7 +9,7 @@ const availablePages: PageProps = {
   '/': true,
   '/create-account': true,
   '/login': true,
-  '/sms': true,
+  '/email': true,
   '/naver/start': true,
   '/naver/complete': true,
   '/kakao/start': true,

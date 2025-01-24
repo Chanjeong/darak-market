@@ -25,7 +25,7 @@ export default function SocialLogin() {
           <span>카카오로 로그인하기</span>
         </Link>
         <Link
-          href="/sms"
+          href="/email"
           className="primary-btn h-10 gap-2 flex items-center justify-center">
           <span>
             <ChatBubbleOvalLeftEllipsisIcon className="size-5" />
