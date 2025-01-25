@@ -10,7 +10,7 @@ export const sendVerificationEmail = async (email: string, token: number) => {
   });
 
   const mailOptions = {
-    from: process.env.GMAIL_USER,
+    from: `"다락마켓" ${process.env.GMAIL_USER}`,
     to: email,
     subject: 'Your Verification Code',
     text: `Your verification code is ${token}.`

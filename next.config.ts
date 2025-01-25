@@ -1,7 +1,9 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ['ssl.pstatic.net'] // 허용할 도메인 추가
+  }
 };
 
 export default nextConfig;

@@ -44,4 +44,6 @@ next-env.d.ts
 *.db
 *.db-journal
 
+(test)/
 app/github
+app/sms

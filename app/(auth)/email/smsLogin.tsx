@@ -22,12 +22,13 @@ const tokenExists = async (token: number) => {
 const emailSchema = z
   .string({ required_error: REQUIRED_ERROR })
   .trim()
+  .toLowerCase()
   .refine(email => validator.isEmail(email), TYPE_ERROR);
 
 const tokenSchema = z.coerce
   .number({ message: TYPE_ERROR, required_error: REQUIRED_ERROR })
-  .min(100000, TYPE_ERROR)
-  .max(999999, TYPE_ERROR)
+  .min(10000000, '입력값이 너무 작습니다')
+  .max(99999999, '입력값이 너무 큽니다')
   .refine(tokenExists, TYPE_ERROR);
 
 interface ActionState {
@@ -35,7 +36,7 @@ interface ActionState {
 }
 
 const getToken = async () => {
-  const token = crypto.randomInt(100000, 999999);
+  const token = crypto.randomInt(10000000, 99999999);
   const exists = await db.sMSToken.findUnique({
     where: {
       token
