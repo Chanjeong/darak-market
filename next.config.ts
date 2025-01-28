@@ -2,8 +2,15 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['ssl.pstatic.net'] // 허용할 도메인 추가
+    remotePatterns: [
+      {
+        hostname: 'ssl.pstatic.net'
+      }
+    ]
   }
+  // images: {
+  //   domains: ['ssl.pstatic.net']
+  // }
 };
 
 export default nextConfig;

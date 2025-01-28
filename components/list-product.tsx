@@ -22,7 +22,7 @@ export default function ListProduct({
       href={`products/${id}`}
       className="flex gap-5 border-b border-neutral-600 py-3">
       <div className="relative size-32 rounded-md overflow-hidden">
-        <Image src={photo} alt={title} fill={true} />
+        <Image src={photo} alt={title} fill className="object-cover" />
       </div>
       <div className="flex flex-col *:text-white gap-1">
         <span className="text-lg">{title}</span>

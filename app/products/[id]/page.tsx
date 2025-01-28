@@ -52,7 +52,7 @@ export default async function ProductsDetail({
     await db.product.delete({
       where: { id: product.id }
     });
-    return redirect('/profile');
+    return redirect('/products');
   };
 
   return (
@@ -69,6 +69,7 @@ export default async function ProductsDetail({
               src={product.user.avatar!}
               alt={product.user.username}
               fill
+              className="object-cover"
             />
           )}
         </div>
@@ -88,12 +89,13 @@ export default async function ProductsDetail({
               상품 삭제
             </button>
           </form>
-        ) : null}
-        <Link
-          href="/chats"
-          className="bg-amber-900 text-white p-3 rounded-lg hover:bg-amber-800 transition">
-          채팅하기
-        </Link>
+        ) : (
+          <Link
+            href="/chats"
+            className="bg-amber-900 text-white p-3 rounded-lg hover:bg-amber-800 transition">
+            채팅하기
+          </Link>
+        )}
       </div>
     </div>
   );
