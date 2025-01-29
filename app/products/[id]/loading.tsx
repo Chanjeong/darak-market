@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <>
       <div className="flex flex-col items-center gap-5 p-5">
-        <div className="skeleton size-96 bg-transparent border-8 border-stone-800 flex items-center justify-center">
+        <div className="skeleton size-80 bg-transparent border-8 border-stone-800 flex items-center justify-center">
           <MdOutlinePhoto className="size-16 text-neutral-400" />
         </div>
       </div>

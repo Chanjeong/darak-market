@@ -12,7 +12,6 @@ interface InitialProductsProps {
 export function ProductList({ initialProducts }: InitialProductsProps) {
   const [products, setProducts] = useState(initialProducts);
   const [page, setPage] = useState(0);
-  const [isLast, setIsLast] = useState(false);
   const trigger = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -26,8 +25,6 @@ export function ProductList({ initialProducts }: InitialProductsProps) {
           if (newProducts.length !== 0) {
             setPage(prev => prev + 1);
             setProducts(prev => [...prev, ...newProducts]);
-          } else {
-            setIsLast(true);
           }
         }
       },
