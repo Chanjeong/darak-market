@@ -47,3 +47,5 @@ next-env.d.ts
 (test)/
 app/github
 app/sms
+
+/public/products/

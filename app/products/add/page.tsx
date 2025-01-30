@@ -83,21 +83,29 @@ export default function AddProduct() {
           value={price || state?.data.price?.toString() || ''}
         />
 
-        <Input
-          name="description"
-          type="text"
-          placeholder="설명"
-          errors={state?.errors.fieldErrors.description}
-          required
-          defaultValue={state?.data.description?.toString() || ''}
-        />
+        <div className="flex flex-col">
+          <textarea
+            name="description"
+            placeholder="설명"
+            required
+            defaultValue={state?.data.description?.toString() || ''}
+            className="w-full h-24 bg-transparent rounded-md 
+                            ring-1 ring-neutral-200 placeholder:text-neutral-400 transition
+                            focus:ring-2 focus:ring-amber-700 border-none focus:outline-none p-2 resize-none"
+          />
+          {state?.errors.fieldErrors.description && (
+            <p className="text-red-500 text-sm">
+              {state.errors.fieldErrors.description}
+            </p>
+          )}
+        </div>
         {isPhotoValid ? (
           <Button text="작성하기" />
         ) : (
           <button
             disabled
             className="primary-btn h-10 disabled:bg-neutral-400 
-    disabled:text-neutral-300 disabled:cursor-not-allowed">
+              disabled:text-neutral-300 disabled:cursor-not-allowed">
             작성하기
           </button>
         )}

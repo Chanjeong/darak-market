@@ -1,4 +1,6 @@
 import { ProductList } from '@/components/product-list';
+import TabBar from '@/components/tab-bar';
+import TopButtons from '@/components/top-buttons';
 import db from '@/lib/db';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Prisma } from '@prisma/client';
@@ -29,6 +31,7 @@ export default async function Products() {
   const initialProducts = await getInitialProducts();
   return (
     <div>
+      <TopButtons />
       <ProductList initialProducts={initialProducts} />
       <Link
         href={'/products/add'}

@@ -30,7 +30,10 @@ export async function addProduct(prevState: any, formData: FormData) {
   };
   if (data.photo instanceof File) {
     const photoData = await data.photo.arrayBuffer();
-    await fs.appendFile(`./public/${data.photo.name}`, Buffer.from(photoData));
+    await fs.appendFile(
+      `./public/products/${data.photo.name}`,
+      Buffer.from(photoData)
+    );
     data.photo = `/${data.photo.name}`;
   }
   const result = productSchema.safeParse(data);
