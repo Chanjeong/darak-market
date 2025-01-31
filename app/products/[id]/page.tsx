@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 
-export const getOwner = async (id: number) => {
+const getOwner = async (id: number) => {
   const session = await getSession();
   if (session.id) {
     return session.id === id;
@@ -14,7 +14,7 @@ export const getOwner = async (id: number) => {
   return false;
 };
 
-export const getProduct = async (id: number) => {
+const getProduct = async (id: number) => {
   const product = db.product.findUnique({
     where: {
       id
@@ -32,11 +32,11 @@ export const getProduct = async (id: number) => {
 };
 
 export default async function ProductsDetail({
-  params: { id }
+  params
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const pId = Number(id);
+  const pId = Number((await params).id);
   if (isNaN(pId)) {
     return notFound();
   }
