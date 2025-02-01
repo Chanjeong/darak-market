@@ -1,18 +1,8 @@
-import BackButton from '@/components/back-button';
+import BackButton, { ViewDetailButton } from '@/components/modal-buttons';
 import db from '@/lib/db';
-import getSession from '@/lib/session';
 import { formatToTime, formatToWon } from '@/lib/utils';
 import Image from 'next/image';
-import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
-
-const getOwner = async (id: number) => {
-  const session = await getSession();
-  if (session.id) {
-    return session.id === id;
-  }
-  return false;
-};
+import { notFound } from 'next/navigation';
 
 const getProduct = async (id: number) => {
   const product = await db.product.findUnique({
@@ -45,16 +35,6 @@ export default async function ProductModal({
     return notFound();
   }
 
-  const owner = await getOwner(product.userId);
-
-  const deleteProduct = async () => {
-    'use server';
-    await db.product.delete({
-      where: { id: product.id }
-    });
-    return redirect('/products');
-  };
-
   return (
     <div className="modal modal-open bg-black bg-opacity-60 flex items-center justify-center">
       <div className="absolute top-10 right-10">
@@ -85,19 +65,7 @@ export default async function ProductModal({
           </div>
           <div className="absolute flex justify-between bottom-0 right-0 p-5 items-center w-1/2 h-20 border-t border-neutral-500">
             <span>{formatToWon(product.price)}원</span>
-            {owner ? (
-              <form action={deleteProduct}>
-                <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-                  상품 삭제
-                </button>
-              </form>
-            ) : (
-              <Link
-                href="/chats"
-                className="bg-amber-900 text-white p-3 rounded-lg hover:bg-amber-800 transition">
-                채팅하기
-              </Link>
-            )}
+            <ViewDetailButton />
           </div>
         </div>
       </div>

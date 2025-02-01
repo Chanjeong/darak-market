@@ -1,5 +1,4 @@
 import { ProductList } from '@/components/product-list';
-import TabBar from '@/components/tab-bar';
 import TopButtons from '@/components/top-buttons';
 import db from '@/lib/db';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -20,6 +19,7 @@ const getInitialProducts = async () => {
       created_at: 'desc'
     }
   });
+
   return products;
 };
 
@@ -33,11 +33,11 @@ export default async function Products() {
     <div>
       <TopButtons />
       <ProductList initialProducts={initialProducts} />
-      <Link
+      <a
         href={'/products/add'}
         className="bg-amber-900 rounded-full size-14 text-white flex items-center justify-center fixed bottom-24 right-8 hover:bg-amber-800 transition-colors">
         <PlusIcon className="size-10" />
-      </Link>
+      </a>
     </div>
   );
 }

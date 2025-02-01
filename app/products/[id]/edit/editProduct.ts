@@ -1,14 +1,15 @@
 'use server';
 
-import { REQUIRED_ERROR, TYPE_ERROR } from '@/lib/constants';
-import db from '@/lib/db';
-import getSession from '@/lib/session';
 import fs from 'fs/promises';
+import getSession from '@/lib/session';
+import { REQUIRED_ERROR, TYPE_ERROR } from '../../../../lib/constants';
+import { z } from 'zod';
+import db from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { z } from 'zod';
 
 const productSchema = z.object({
+  id: z.coerce.number(),
   title: z.string({ required_error: REQUIRED_ERROR }).min(0),
   photo: z
     .string({ required_error: REQUIRED_ERROR })
@@ -22,12 +23,13 @@ const productSchema = z.object({
   description: z.string({ required_error: REQUIRED_ERROR }).min(0)
 });
 
-export async function addProduct(_: any, formData: FormData) {
+export async function editProduct(_: any, formData: FormData) {
   const data = {
     photo: formData.get('photo'),
     title: formData.get('title'),
     price: formData.get('price'),
-    description: formData.get('description')
+    description: formData.get('description'),
+    id: formData.get('id')
   };
   if (data.photo instanceof File) {
     const photoData = await data.photo.arrayBuffer();
@@ -47,7 +49,8 @@ export async function addProduct(_: any, formData: FormData) {
   } else {
     const session = await getSession();
     if (session.id) {
-      await db.product.create({
+      await db.product.update({
+        where: { id: result.data.id },
         data: {
           title: result.data.title,
           photo: result.data.photo,

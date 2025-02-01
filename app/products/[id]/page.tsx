@@ -5,6 +5,7 @@ import { FaRegCircleUser } from 'react-icons/fa6';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
+import { revalidatePath } from 'next/cache';
 
 const getOwner = async (id: number) => {
   const session = await getSession();
@@ -52,7 +53,9 @@ export default async function ProductsDetail({
     await db.product.delete({
       where: { id: product.id }
     });
-    return redirect('/products');
+
+    revalidatePath('/products');
+    redirect('/products');
   };
 
   return (
@@ -84,11 +87,18 @@ export default async function ProductsDetail({
       <div className="fixed w-full max-w-md bottom-0 flex p-5 justify-between items-center bg-stone-700">
         <span>{formatToWon(product.price)}원</span>
         {owner ? (
-          <form action={deleteProduct}>
-            <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-              상품 삭제
-            </button>
-          </form>
+          <div className="flex gap-3">
+            <form action={deleteProduct}>
+              <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
+                상품 삭제
+              </button>
+            </form>
+            <a href={`/products/${pId}/edit`}>
+              <button className="bg-amber-900 px-5 py-2.5 rounded-md text-white font-semibold">
+                수정하기
+              </button>
+            </a>
+          </div>
         ) : (
           <Link
             href="/chats"
