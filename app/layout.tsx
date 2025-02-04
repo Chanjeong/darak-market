@@ -17,6 +17,9 @@ export const metadata: Metadata = {
     template: '%s | 다락마켓',
     default: '다락마켓'
   },
+  icons: {
+    icon: '/darak-icon.svg'
+  },
   description: '물건을 사고 빌릴 수 있는 마켓'
 };
 

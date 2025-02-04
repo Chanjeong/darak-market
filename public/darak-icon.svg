@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <!-- 지붕 그라데이션: 따뜻한 갈색 계열 -->
+    <linearGradient id="roofGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D2691E" />
+      <stop offset="100%" stop-color="#A0522D" />
+    </linearGradient>
+    <!-- 건물 본체 그라데이션: 따뜻한 주황빛 -->
+    <linearGradient id="bodyGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F4A460" />
+      <stop offset="100%" stop-color="#DEB887" />
+    </linearGradient>
+  </defs>
+
+  <!-- 다락방 지붕: 삼각형 모양 -->
+  <polygon fill="url(#roofGradient)" points="32,8 8,32 56,32" />
+
+  <!-- 다락방 본체: 단순한 직사각형 -->
+  <rect x="16" y="32" width="32" height="24" fill="url(#bodyGradient)" stroke="#8B4513" stroke-width="1" />
+
+  <!-- 심플한 굴뚝 (옵션): 올드한 느낌을 더함 -->
+  <rect x="44" y="14" width="6" height="10" fill="#8B4513" />
+</svg>

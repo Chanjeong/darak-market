@@ -11,6 +11,10 @@ export const getProduct = async (id: number) => {
   return product;
 };
 
+export const metadata = {
+  title: '수정하기'
+};
+
 export default async function DeleteProduct({
   params
 }: {

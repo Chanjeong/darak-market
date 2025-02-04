@@ -3,7 +3,6 @@ import TopButtons from '@/components/top-buttons';
 import db from '@/lib/db';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Prisma } from '@prisma/client';
-import Link from 'next/link';
 
 const getInitialProducts = async () => {
   const products = await db.product.findMany({
@@ -21,6 +20,10 @@ const getInitialProducts = async () => {
   });
 
   return products;
+};
+
+export const metadata = {
+  title: '홈'
 };
 
 export type InitialProducts = Prisma.PromiseReturnType<

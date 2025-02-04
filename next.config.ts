@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         hostname: 'ssl.pstatic.net'
+      },
+      {
+        hostname: 'k.kakaocdn.net'
       }
     ]
   }

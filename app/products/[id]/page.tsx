@@ -5,7 +5,7 @@ import { FaRegCircleUser } from 'react-icons/fa6';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, unstable_cache } from 'next/cache';
 
 const getOwner = async (id: number) => {
   const session = await getSession();
@@ -30,6 +30,40 @@ const getProduct = async (id: number) => {
     }
   });
   return product;
+};
+const getCachedProduct = unstable_cache(getProduct, ['product-detail'], {
+  tags: ['product-detail']
+});
+
+const getProductTitle = async (id: number) => {
+  const product = await db.product.findUnique({
+    where: {
+      id
+    },
+    select: {
+      title: true
+    }
+  });
+  return product;
+};
+
+const getCachedProductTitle = unstable_cache(
+  getProductTitle,
+  ['product-title'],
+  {
+    tags: ['product-title']
+  }
+);
+
+export const generateMetadata = async ({
+  params
+}: {
+  params: { id: string };
+}) => {
+  const product = await getProductTitle(Number(params.id));
+  return {
+    title: product?.title
+  };
 };
 
 export default async function ProductsDetail({

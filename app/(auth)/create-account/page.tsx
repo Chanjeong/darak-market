@@ -6,6 +6,7 @@ import { useActionState } from 'react';
 import { createAccount } from './createAccount';
 import Button from '@/components/button';
 import { PASSWORD_MIN } from '@/lib/constants';
+
 export default function CreateAccount() {
   const [state, dispatch] = useActionState(createAccount, null);
 

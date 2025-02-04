@@ -64,6 +64,7 @@ export async function editProduct(_: any, formData: FormData) {
         }
       });
       revalidatePath('/products');
+      revalidatePath(`/products/${result.data.id}`);
       redirect('/products');
     }
   }
