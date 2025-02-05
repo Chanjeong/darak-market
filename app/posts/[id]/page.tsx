@@ -113,7 +113,7 @@ export default async function PostDetail({
   const allComments = await getCachedComments(post.id);
   const owner = await getOwner(post.userId);
 
-  const onDelete = async () => {
+  const deletePost = async () => {
     'use server';
     await db.post.deleteMany({
       where: { id }
@@ -123,13 +123,23 @@ export default async function PostDetail({
   };
   return (
     <div className="p-5 text-white relative">
-      <form action={onDelete} className="absolute right-3">
-        {owner && (
-          <button>
-            <XMarkIcon className="size-8" />
-          </button>
-        )}
-      </form>
+      {owner && (
+        <>
+          <div className="flex gap-3 absolute right-3 items-center">
+            <form action={deletePost}>
+              <button>
+                <XMarkIcon className="size-8" />
+              </button>
+            </form>
+            <a href={`/posts/${id}/edit`}>
+              <button className="bg-amber-900 px-5 py-2.5 rounded-md text-white font-semibold">
+                수정
+              </button>
+            </a>
+          </div>
+        </>
+      )}
+
       <div className="flex items-center gap-2 mb-2">
         <Image
           width={28}
