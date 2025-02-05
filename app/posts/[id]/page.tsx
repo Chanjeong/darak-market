@@ -1,17 +1,19 @@
 import db from '@/lib/db';
 import getSession from '@/lib/session';
 import { formatToTime } from '@/lib/utils';
-import { EyeIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import { unstable_cache } from 'next/cache';
+import { notFound, redirect } from 'next/navigation';
+import { revalidatePath, unstable_cache } from 'next/cache';
 import LikeButton from '@/components/like-button';
+import { getComments } from './commentAction';
+import { CommentList } from '@/components/comment-list';
 
-const getPost = async (id: number) => {
+const getPost = async (postId: number) => {
   try {
     const post = await db.post.update({
       where: {
-        id
+        id: postId
       },
       data: {
         views: {
@@ -39,7 +41,8 @@ const getPost = async (id: number) => {
 };
 
 const getCachedPost = unstable_cache(getPost, ['post-detail'], {
-  tags: ['post-detail']
+  tags: ['post-detail'],
+  revalidate: 60
 });
 
 const getLikeStatus = async (postId: number, userId: number) => {
@@ -75,6 +78,21 @@ async function getCachedLikeStatus(postId: number, userId: number) {
   return cachedOperation(postId);
 }
 
+function getCachedComments(postId: number) {
+  const cachedComments = unstable_cache(getComments, ['comments'], {
+    tags: [`comments-${postId}`]
+  });
+  return cachedComments(postId);
+}
+
+const getOwner = async (id: number) => {
+  const session = await getSession();
+  if (session.id) {
+    return session.id === id;
+  }
+  return false;
+};
+
 export default async function PostDetail({
   params
 }: {
@@ -92,8 +110,26 @@ export default async function PostDetail({
   const session = await getSession();
   const { likeCount, isLiked } = await getCachedLikeStatus(id, session.id!);
 
+  const allComments = await getCachedComments(post.id);
+  const owner = await getOwner(post.userId);
+
+  const onDelete = async () => {
+    'use server';
+    await db.post.deleteMany({
+      where: { id }
+    });
+    revalidatePath('/life');
+    redirect('/life');
+  };
   return (
-    <div className="p-5 text-white">
+    <div className="p-5 text-white relative">
+      <form action={onDelete} className="absolute right-3">
+        {owner && (
+          <button>
+            <XMarkIcon className="size-8" />
+          </button>
+        )}
+      </form>
       <div className="flex items-center gap-2 mb-2">
         <Image
           width={28}
@@ -117,6 +153,7 @@ export default async function PostDetail({
           <span>조회 {post.views}</span>
         </div>
         <LikeButton isLiked={isLiked} likeCount={likeCount} postId={id} />
+        <CommentList postId={id} allComments={allComments} />
       </div>
     </div>
   );

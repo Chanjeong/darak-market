@@ -1,21 +1,32 @@
-import { REQUIRED_ERROR } from '@/lib/constants';
-import { z } from 'zod';
+'use server';
 
-const commentSchema = z.object({
-  comment: z.string({ required_error: REQUIRED_ERROR })
-});
+import db from '@/lib/db';
+import getSession from '@/lib/session';
+import { revalidateTag } from 'next/cache';
 
-export default function UploadComment(_: any, formData: FormData) {
-  const data = {
-    comment: formData.get('comment')
-  };
-
-  const result = commentSchema.safeParse(data);
-
-  if (!result.success) {
-    return {
-      errors: result.error.flatten()
-    };
-  } else {
-  }
+export async function createComment(payload: string, postId: number) {
+  const user = await getSession();
+  if (!user.id) return;
+  const newComment = await db.comment.create({
+    data: {
+      userId: user.id,
+      payload,
+      postId: postId
+    }
+  });
+  revalidateTag(`comments-${postId}`);
+  return newComment;
+}
+export async function getComments(postId: number) {
+  const comments = await db.comment.findMany({
+    where: {
+      postId: postId
+    },
+    include: {
+      user: {
+        select: { username: true, avatar: true }
+      }
+    }
+  });
+  return comments;
 }

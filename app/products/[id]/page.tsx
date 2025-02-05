@@ -31,9 +31,6 @@ const getProduct = async (id: number) => {
   });
   return product;
 };
-const getCachedProduct = unstable_cache(getProduct, ['product-detail'], {
-  tags: ['product-detail']
-});
 
 const getProductTitle = async (id: number) => {
   const product = await db.product.findUnique({
@@ -60,7 +57,7 @@ export const generateMetadata = async ({
 }: {
   params: { id: string };
 }) => {
-  const product = await getProductTitle(Number(params.id));
+  const product = await getCachedProductTitle(Number(params.id));
   return {
     title: product?.title
   };

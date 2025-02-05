@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       },
       {
         hostname: 'k.kakaocdn.net'
+      },
+      {
+        hostname: 'www.gravatar.com'
       }
     ]
   }

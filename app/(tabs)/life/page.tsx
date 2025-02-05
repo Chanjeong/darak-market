@@ -4,9 +4,12 @@ import {
   ChatBubbleBottomCenterIcon,
   HandThumbUpIcon
 } from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import { Prisma } from '@prisma/client';
+import { PostList } from '@/components/post-list';
 
-const getPosts = async () => {
+const getInitialPosts = async () => {
   const posts = await db.post.findMany({
     select: {
       id: true,
@@ -20,6 +23,10 @@ const getPosts = async () => {
           likes: true
         }
       }
+    },
+    take: 1,
+    orderBy: {
+      created_at: 'desc'
     }
   });
   return posts;
@@ -29,37 +36,19 @@ export const metadata = {
   title: '이모저모'
 };
 
+export type InitialPosts = Prisma.PromiseReturnType<typeof getInitialPosts>;
+
 export default async function Life() {
-  const posts = await getPosts();
+  const initialPosts = await getInitialPosts();
 
   return (
-    <div className="flex flex-col p-5">
-      {posts.map(post => (
-        <Link
-          key={post.id}
-          href={`/posts/${post.id}`}
-          className="pb-5 mb-5 border-b border-neutral-500 text-neutral-400 flex  flex-col gap-2 last:pb-0 last:border-b-0">
-          <h2 className="text-white text-lg font-semibold">{post.title}</h2>
-          <p>{post.description}</p>
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex gap-4 items-center">
-              <span>{formatToTime(post.created_at.toString())}</span>
-              <span>·</span>
-              <span>조회 {post.views}</span>
-            </div>
-            <div className="flex gap-4 items-center *:flex *:gap-1 *:items-center">
-              <span>
-                <HandThumbUpIcon className="size-4" />
-                {post._count.likes}
-              </span>
-              <span>
-                <ChatBubbleBottomCenterIcon className="size-4" />
-                {post._count.comments}
-              </span>
-            </div>
-          </div>
-        </Link>
-      ))}
+    <div>
+      <PostList initialPosts={initialPosts} />
+      <Link
+        href={'/posts/add'}
+        className="bg-amber-900 rounded-full size-14 text-white flex items-center justify-center fixed bottom-24 right-8 hover:bg-amber-800 transition-colors">
+        <PlusIcon className="size-10" />
+      </Link>
     </div>
   );
 }
