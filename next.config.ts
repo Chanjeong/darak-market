@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
       {
         hostname: 'www.gravatar.com'
       }
-    ]
+    ],
+    domains: ['localhost']
   }
   // images: {
   //   domains: ['ssl.pstatic.net']

@@ -5,7 +5,6 @@ import Input from '@/components/input';
 import { formatToWon } from '@/lib/utils';
 import { useActionState, useState } from 'react';
 import { editProduct } from './editProduct';
-import Image from 'next/image';
 
 interface EditProductProps {
   product: {
