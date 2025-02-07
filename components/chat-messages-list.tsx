@@ -6,11 +6,8 @@ import { formatToTime } from '@/lib/utils';
 import { ArrowUpCircleIcon } from '@heroicons/react/24/solid';
 import { createClient, RealtimeChannel } from '@supabase/supabase-js';
 import Image from 'next/image';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-const SUPABASE_PUBLIC_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inltb2xydmx0eXRheGRhZmNyeHFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg4Mjg4NDEsImV4cCI6MjA1NDQwNDg0MX0.TtXoz7XoyVOODZUmzeunjzZJ86K3NszCCRorGhBmWHg';
-const SUPABASE_URL = 'https://ymolrvltytaxdafcrxqp.supabase.co';
 interface ChatMessagesListProps {
   initialChatMessages: InitialChatMessages;
   userId: number;
@@ -18,6 +15,8 @@ interface ChatMessagesListProps {
   username: string;
   avatar: string;
 }
+
+console.log(process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY);
 
 export default function ChatMessagesList({
   initialChatMessages,
@@ -36,79 +35,72 @@ export default function ChatMessagesList({
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setMessages(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        payload: message,
-        created_at: new Date(),
-        userId,
-        user: {
-          username: 'string',
-          avatar: 'xxx'
-        }
+
+    const newMsg = {
+      id: Date.now(),
+      payload: message,
+      created_at: new Date(),
+      userId,
+      user: {
+        username,
+        avatar
       }
-    ]);
+    };
+
+    setMessages(prev => [...prev, newMsg]);
+
     channel.current?.send({
       type: 'broadcast',
       event: 'message',
-      payload: {
-        id: Date.now(),
-        payload: message,
-        created_at: new Date(),
-        userId,
-        user: {
-          username,
-          avatar
-        }
-      }
+      payload: newMsg
     });
+
     await saveMessages(message, chatRoomId);
     setMessage('');
   };
+
   useEffect(() => {
-    const client = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
+    const client = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!
+    );
     channel.current = client.channel(`room-${chatRoomId}`);
     channel.current
       .on('broadcast', { event: 'message' }, payload => {
         setMessages(prev => [...prev, payload.payload]);
       })
       .subscribe();
+
     return () => {
       channel.current?.unsubscribe();
     };
   }, [chatRoomId]);
 
   return (
-    <div className="p-5 flex flex-col gap-5 min-h-screen justify-end">
-      {messages.map(message => (
+    <div className="p-5 flex flex-col gap-5 min-h-screen justify-end ">
+      {messages.map(msg => (
         <div
-          key={message.id}
-          className={`flex gap-2 items-start ${
-            message.userId === userId ? 'justify-end' : ''
-          }`}>
-          {message.userId === userId ? null : (
-            <Image
-              src={message.user.avatar!}
-              alt={message.user.username}
-              width={50}
-              height={50}
-              className="size-8 rounded-full"
-            />
+          key={msg.id}
+          className={`chat ${msg.userId === userId ? 'chat-end' : 'chat-start'}`}>
+          {msg.userId !== userId && (
+            <div className="chat-image avatar">
+              <div className="w-10 rounded-full">
+                <Image
+                  src={msg.user.avatar!}
+                  alt={msg.user.username}
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              </div>
+            </div>
           )}
           <div
-            className={`flex flex-col gap-1 ${
-              message.userId === userId ? 'items-end' : ''
-            }`}>
-            <span
-              className={`${
-                message.userId === userId ? 'bg-neutral-500' : 'bg-orange-500'
-              } p-2.5 rounded-md`}>
-              {message.payload}
-            </span>
-            <span className="text-xs">
-              {formatToTime(message.created_at.toString())}
-            </span>
+            className={`chat-bubble ${msg.userId === userId ? 'bg-amber-600' : 'bg-neutral-600'} text-white`}>
+            {msg.payload}
+          </div>
+          <div className="chat-footer text-xs text-gray-300">
+            {formatToTime(msg.created_at.toString())}
           </div>
         </div>
       ))}
@@ -117,13 +109,13 @@ export default function ChatMessagesList({
           required
           onChange={onChange}
           value={message}
-          className="bg-transparent rounded-full w-full h-10 focus:outline-none px-5 ring-2 focus:ring-4 transition ring-neutral-200 focus:ring-neutral-50 border-none placeholder:text-neutral-400"
           type="text"
           name="message"
           placeholder="메세지 보내기"
+          className="input input-bordered w-full pr-16 bg-stone-800 text-white placeholder:text-gray-400"
         />
-        <button className="absolute right-0">
-          <ArrowUpCircleIcon className="size-10 text-amber-900 transition-colors hover:text-amber-800" />
+        <button className="btn btn-ghost absolute right-0" type="submit">
+          <ArrowUpCircleIcon className="w-8 h-8 text-amber-900 transition-colors hover:text-amber-800" />
         </button>
       </form>
     </div>

@@ -32,6 +32,9 @@ const getChats = async (id: number) => {
           avatar: true
         }
       }
+    },
+    orderBy: {
+      created_at: 'desc'
     }
   });
   return chats;

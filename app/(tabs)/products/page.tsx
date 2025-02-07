@@ -36,11 +36,6 @@ export default async function Products() {
     <div>
       <TopButtons />
       <ProductList initialProducts={initialProducts} />
-      <a
-        href={'/products/add'}
-        className="bg-amber-900 rounded-full size-14 text-white flex items-center justify-center fixed bottom-24 right-8 hover:bg-amber-800 transition-colors">
-        <PlusIcon className="size-10" />
-      </a>
     </div>
   );
 }

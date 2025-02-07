@@ -44,11 +44,6 @@ export default async function Life() {
   return (
     <div>
       <PostList initialPosts={initialPosts} />
-      <Link
-        href={'/posts/add'}
-        className="bg-amber-900 rounded-full size-14 text-white flex items-center justify-center fixed bottom-24 right-8 hover:bg-amber-800 transition-colors">
-        <PlusIcon className="size-10" />
-      </Link>
     </div>
   );
 }

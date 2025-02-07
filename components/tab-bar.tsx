@@ -7,11 +7,11 @@ import { RiWechat2Fill } from 'react-icons/ri';
 import { RiWechat2Line } from 'react-icons/ri';
 import { IoNewspaperSharp } from 'react-icons/io5';
 import { IoNewspaperOutline } from 'react-icons/io5';
-import { IoIosVideocam } from 'react-icons/io';
-import { IoVideocamOutline } from 'react-icons/io5';
 import { FaUser } from 'react-icons/fa6';
 import { FaRegUser } from 'react-icons/fa6';
 import { usePathname } from 'next/navigation';
+import { PlusCircleIcon as PlusCircleIconOutline } from '@heroicons/react/24/outline';
+import { PlusCircleIcon } from '@heroicons/react/24/solid';
 export default function TabBar() {
   const pathname = usePathname();
 
@@ -48,6 +48,19 @@ export default function TabBar() {
         )}
       </Link>
       <Link
+        href={'/add'}
+        className="flex flex-col items-center justify-center gap-2 text-sm text-neutral-400 py-3">
+        {pathname === '/add' ? (
+          <>
+            <PlusCircleIcon className="text-2xl size-16 text-neutral-200" />
+          </>
+        ) : (
+          <>
+            <PlusCircleIconOutline className="text-2xl size-16 text-neutral-400" />
+          </>
+        )}
+      </Link>
+      <Link
         href={'/chats'}
         className="flex flex-col items-center justify-center gap-2 text-sm text-neutral-400 py-3">
         {pathname === '/chats' ? (
@@ -62,21 +75,7 @@ export default function TabBar() {
           </>
         )}
       </Link>
-      <Link
-        href={'/live'}
-        className="flex flex-col items-center justify-center gap-2 text-sm text-neutral-400 py-3">
-        {pathname === '/live' ? (
-          <>
-            <IoIosVideocam className="size-7" />
-            <span className="text-neutral-200">라이브</span>
-          </>
-        ) : (
-          <>
-            <IoVideocamOutline className="size-7" />
-            <span className="text-neutral-400">라이브</span>
-          </>
-        )}
-      </Link>
+
       <Link
         href={'/profile'}
         className="flex flex-col items-center justify-center gap-2 text-sm text-neutral-400 py-3">
