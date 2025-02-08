@@ -8,23 +8,25 @@ datasource db {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  username   String     @unique
-  email      String?    @unique
-  phone      String?    @unique
-  password   String?
-  naver_id   String?    @unique
-  kakao_id   String?    @unique
-  avatar     String?    @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp")
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
-  tokens     SMSToken[]
-  products   Product[]
-  posts      Post[]
-  comments   Comment[]
-  likes      Like[]
-  chat_rooms ChatRoom[]
-  messages   Message[]
+  id               Int        @id @default(autoincrement())
+  username         String     @unique
+  email            String?    @unique
+  phone            String?    @unique
+  password         String?
+  naver_id         String?    @unique
+  kakao_id         String?    @unique
+  avatar           String?    @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp")
+  created_at       DateTime   @default(now())
+  updated_at       DateTime   @updatedAt
+  tokens           SMSToken[]
+  products         Product[]
+  purchaseProducts Product[]  @relation("BoughtProducts")
+  posts            Post[]
+  comments         Comment[]
+  likes            Like[]
+  chat_rooms       ChatRoom[]
+  messages         Message[]
+  reviews          Review[]
 }
 
 model SMSToken {
@@ -37,15 +39,19 @@ model SMSToken {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   title       String
   price       Int
   photo       String
   description String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
+  buyer       User?      @relation("BoughtProducts", fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId     Int?
+  chatRooms   ChatRoom[]
+  reviews     Review[]
 }
 
 model Post {
@@ -85,6 +91,8 @@ model Like {
 
 model ChatRoom {
   id         String    @id @default(cuid())
+  product    Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  Int?
   users      User[]
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -100,4 +108,16 @@ model Message {
   userId     Int
   room       ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
   chatRoomId String
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  rating     Int
+  product    Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  Int?
+  comment    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  reviewee   User     @relation(fields: [revieweeId], references: [id], onDelete: Cascade)
+  revieweeId Int
 }

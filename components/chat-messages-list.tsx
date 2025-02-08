@@ -1,12 +1,16 @@
 'use client';
 
-import saveMessages from '@/app/(tabs)/chats/saveMessage';
+import saveMessages, {
+  completeTransaction,
+  goToReviewPage
+} from '@/app/(tabs)/chats/chatAction';
 import { InitialChatMessages } from '@/app/chats/[id]/page';
 import { formatToTime } from '@/lib/utils';
 import { ArrowUpCircleIcon } from '@heroicons/react/24/solid';
 import { createClient, RealtimeChannel } from '@supabase/supabase-js';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
+import Button from './button';
 
 interface ChatMessagesListProps {
   initialChatMessages: InitialChatMessages;
@@ -14,16 +18,18 @@ interface ChatMessagesListProps {
   chatRoomId: string;
   username: string;
   avatar: string;
+  buyerId: number | null;
+  hasReviewed: boolean;
 }
-
-console.log(process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY);
 
 export default function ChatMessagesList({
   initialChatMessages,
   userId,
   chatRoomId,
   username,
-  avatar
+  avatar,
+  buyerId,
+  hasReviewed
 }: ChatMessagesListProps) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState(initialChatMessages);
@@ -118,6 +124,22 @@ export default function ChatMessagesList({
           <ArrowUpCircleIcon className="w-8 h-8 text-amber-900 transition-colors hover:text-amber-800" />
         </button>
       </form>
+      {buyerId ? (
+        <form action={goToReviewPage}>
+          <input type="hidden" name="chatRoomId" value={chatRoomId} />
+          <button
+            className="primary-btn h-10 disabled:bg-neutral-400 
+    disabled:text-neutral-300 disabled:cursor-not-allowed"
+            disabled={hasReviewed}>
+            리뷰 작성하기
+          </button>
+        </form>
+      ) : (
+        <form action={completeTransaction}>
+          <input type="hidden" name="chatRoomId" value={chatRoomId} />
+          <Button text="거래 완료" />
+        </form>
+      )}
     </div>
   );
 }

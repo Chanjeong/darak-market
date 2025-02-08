@@ -1,11 +1,13 @@
 import { ProductList } from '@/components/product-list';
-import TopButtons from '@/components/top-buttons';
 import db from '@/lib/db';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Prisma } from '@prisma/client';
 
 const getInitialProducts = async () => {
   const products = await db.product.findMany({
+    where: {
+      buyerId: null
+    },
     select: {
       id: true,
       price: true,
@@ -34,7 +36,6 @@ export default async function Products() {
   const initialProducts = await getInitialProducts();
   return (
     <div>
-      <TopButtons />
       <ProductList initialProducts={initialProducts} />
     </div>
   );

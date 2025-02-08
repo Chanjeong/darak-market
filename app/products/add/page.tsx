@@ -3,7 +3,7 @@
 import Input from '@/components/input';
 import { PhotoIcon } from '@heroicons/react/24/solid';
 import { useActionState, useState } from 'react';
-import { addProduct } from './addProduct';
+import { addProduct } from '../../../public/addProduct';
 import { formatToWon } from '@/lib/utils';
 import Button from '@/components/button';
 
@@ -25,7 +25,7 @@ export default function AddProduct() {
       return;
     }
 
-    const maxSize = 3 * 1024 * 1024;
+    const maxSize = 1000 * 1024 * 1024;
     if (file.size > maxSize) {
       return;
     }

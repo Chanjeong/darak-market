@@ -15,6 +15,12 @@ const getChats = async (id: number) => {
       }
     },
     include: {
+      product: {
+        select: {
+          photo: true,
+          buyerId: true
+        }
+      },
       messages: {
         select: {
           id: true,
@@ -56,17 +62,20 @@ export default async function Chats() {
           <div className="p-5 flex gap-5 w-full">
             <div className="flex gap-5 w-full">
               <div className="flex items-center">
-                {chat.users.map(user => {
-                  return (
-                    <>
-                      <div
-                        key={user.id}
-                        className="relative size-8 rounded-full overflow-hidden">
-                        <Image src={user.avatar!} alt={user.username} fill />
-                      </div>
-                    </>
-                  );
-                })}
+                {chat.product?.photo && (
+                  <div className="relative size-8 rounded-full overflow-hidden">
+                    <Image src={chat.product.photo} alt="상품 사진" fill />
+                  </div>
+                )}
+                {chat.users
+                  .filter(user => user.id !== session.id)
+                  .map(user => (
+                    <div
+                      key={user.id}
+                      className="relative size-8 rounded-full overflow-hidden">
+                      <Image src={user.avatar!} alt={user.username} fill />
+                    </div>
+                  ))}
               </div>
               <div className="flex flex-col gap-px w-full">
                 <div className="flex">
@@ -87,6 +96,15 @@ export default async function Chats() {
                   <div className="text-xs text-neutral-500">
                     {formatToTime(chat.created_at.toString())}
                   </div>
+                </div>
+                <div>
+                  {chat.product?.buyerId ? (
+                    <div className="bg-green-700 rounded-lg text-sm text-white w-1/4 flex items-center justify-center">
+                      판매 완료
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </div>
               </div>
             </div>

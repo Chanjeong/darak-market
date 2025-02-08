@@ -4,7 +4,6 @@ import { formatToWon } from '@/lib/utils';
 import { FaRegCircleUser } from 'react-icons/fa6';
 import Image from 'next/image';
 import { notFound, redirect } from 'next/navigation';
-import Link from 'next/link';
 import { revalidatePath, unstable_cache } from 'next/cache';
 
 const getOwner = async (id: number) => {
@@ -55,9 +54,9 @@ const getCachedProductTitle = unstable_cache(
 export const generateMetadata = async ({
   params
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) => {
-  const product = await getCachedProductTitle(Number(params.id));
+  const product = await getCachedProductTitle(Number((await params).id));
   return {
     title: product?.title
   };
@@ -94,6 +93,11 @@ export default async function ProductsDetail({
     const session = await getSession();
     const room = await db.chatRoom.create({
       data: {
+        product: {
+          connect: {
+            id: product.id
+          }
+        },
         users: {
           connect: [
             {
@@ -115,7 +119,7 @@ export default async function ProductsDetail({
   return (
     <div>
       <div className="relative w-full h-96">
-        <Image src={product.photo} alt={product.title} fill />
+        <Image src={`${product.photo}`} alt={product.title} fill />
       </div>
       <div className="p-5 flex items-center gap-5 border-neutral-600 border-b">
         <div className="relative size-12 rounded-full overflow-hidden">

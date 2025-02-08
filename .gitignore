@@ -48,4 +48,4 @@ next-env.d.ts
 app/github
 app/sms
 
-/public/products/
+/public

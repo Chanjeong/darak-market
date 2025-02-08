@@ -5,6 +5,9 @@ import db from '@/lib/db';
 export async function fetchProductPage(page: number) {
   const numOfProducts = 1;
   const products = await db.product.findMany({
+    where: {
+      buyerId: null
+    },
     select: {
       id: true,
       price: true,

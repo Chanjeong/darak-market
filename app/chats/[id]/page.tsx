@@ -13,6 +13,13 @@ const getChat = async (id: string) => {
     include: {
       users: {
         select: { id: true }
+      },
+      product: {
+        select: {
+          buyerId: true,
+          id: true,
+          userId: true
+        }
       }
     }
   });
@@ -84,7 +91,27 @@ export default async function Chats({
     return notFound();
   }
   const participants = room.users.some(user => user.id === session.id);
+  const buyerId = room.product?.buyerId || null;
 
+  const product = room.product;
+  const isTransactionComplete = Boolean(product?.buyerId);
+
+  let hasReviewed = false;
+  if (isTransactionComplete) {
+    let review;
+    if (session.id === product!.userId) {
+      // 현재 사용자가 판매자이면, 리뷰 대상은 구매자 → reviewee = product.buyerId
+      review = await db.review.findFirst({
+        where: { productId: product!.id, revieweeId: product!.buyerId! }
+      });
+    } else {
+      // 현재 사용자가 구매자이면, 리뷰 대상은 판매자 → reviewee = product.userId
+      review = await db.review.findFirst({
+        where: { productId: product!.id, revieweeId: product!.userId }
+      });
+    }
+    hasReviewed = Boolean(review);
+  }
   // const deleteRoom = async () => {
   //   'use server';
   //   await db.chatRoom.delete({
@@ -105,6 +132,8 @@ export default async function Chats({
         chatRoomId={id}
         initialChatMessages={initialChatMessages}
         userId={session.id!}
+        buyerId={buyerId}
+        hasReviewed={hasReviewed}
       />
     </div>
   );
