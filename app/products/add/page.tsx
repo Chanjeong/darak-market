@@ -3,7 +3,7 @@
 import Input from '@/components/input';
 import { PhotoIcon } from '@heroicons/react/24/solid';
 import { useActionState, useState } from 'react';
-import { addProduct } from '../../../public/addProduct';
+import { addProduct } from './addProduct';
 import { formatToWon } from '@/lib/utils';
 import Button from '@/components/button';
 
