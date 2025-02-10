@@ -2,7 +2,7 @@ import db from '@/lib/db';
 import { notFound } from 'next/navigation';
 import ProductEdit from './edit-product';
 
-export const getProduct = async (id: number) => {
+const getProduct = async (id: number) => {
   const product = await db.product.findUnique({
     where: {
       id
