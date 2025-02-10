@@ -1,3 +1,4 @@
+import EditUsername from '@/components/editUsername';
 import db from '@/lib/db';
 import getSession from '@/lib/session';
 import Image from 'next/image';
@@ -52,8 +53,17 @@ export default async function Profile() {
             />
           )}
         </div>
-        <h1 className="text-2xl font-bold text-white">{user?.username}</h1>
+        <EditUsername initialUsername={user!.username} />
         <div className="flex flex-col gap-3 w-full">
+          {user?.password ? (
+            <Link
+              href="profile/password"
+              className="block text-center py-2 px-4 text-white  bg-amber-800 rounded hover:bg-amber-700 transition">
+              비밀번호 변경
+            </Link>
+          ) : (
+            ''
+          )}
           <Link
             href="/profile/reviews"
             className="block text-center py-2 px-4 text-white  bg-amber-800 rounded hover:bg-amber-700 transition">

@@ -19,30 +19,36 @@ export default async function ProfileBuy() {
 
   return (
     <div className="flex flex-col gap-5 pb-20">
-      {products.map(product => (
-        <Link
-          key={product.id}
-          href={`/products/${product.id}`}
-          className="flex gap-5 border-b border-neutral-600 py-3">
-          <div className="relative size-32 rounded-md overflow-hidden">
-            <Image
-              src={product.photo}
-              alt={product.title}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="flex flex-col *:text-white gap-1">
-            <span className="text-lg">{product.title}</span>
-            <span className="text-sm">
-              {formatToTime(product.created_at.toString())}
-            </span>
-            <span className="text-lg font-semibold">
-              {formatToWon(product.price)}원
-            </span>
-          </div>
-        </Link>
-      ))}
+      {products.length === 0 ? (
+        <div className="p-5">구매한 상품이 없습니다.</div>
+      ) : (
+        <div>
+          {products.map(product => (
+            <Link
+              key={product.id}
+              href={`/products/${product.id}`}
+              className="flex gap-5 border-b border-neutral-600 py-3">
+              <div className="relative size-32 rounded-md overflow-hidden">
+                <Image
+                  src={product.photo}
+                  alt={product.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex flex-col *:text-white gap-1">
+                <span className="text-lg">{product.title}</span>
+                <span className="text-sm">
+                  {formatToTime(product.created_at.toString())}
+                </span>
+                <span className="text-lg font-semibold">
+                  {formatToWon(product.price)}원
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
