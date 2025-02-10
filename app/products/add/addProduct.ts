@@ -31,8 +31,10 @@ export async function addProduct(_: any, formData: FormData) {
   };
   if (data.photo instanceof File) {
     const photoData = await data.photo.arrayBuffer();
-    await fs.appendFile(`./public/${data.photo.name}`, Buffer.from(photoData));
-    data.photo = `/${data.photo.name}`;
+    const base64Image = Buffer.from(photoData).toString('base64');
+    data.photo = `data:${data.photo.type};base64,${base64Image}`;
+    // await fs.appendFile(`./public/${data.photo.name}`, Buffer.from(photoData));
+    // data.photo = `/${data.photo.name}`;
   }
   const result = productSchema.safeParse(data);
 
