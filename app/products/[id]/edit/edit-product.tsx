@@ -50,6 +50,7 @@ export default function ProductEdit({ product }: EditProductProps) {
 
   const [state, dispatch] = useActionState(editProduct, null);
   const isBlobUrl = image.startsWith('blob:');
+  const isBase64 = image.startsWith('data:image');
   const isPhotoValid = image !== '';
 
   return (
@@ -60,9 +61,8 @@ export default function ProductEdit({ product }: EditProductProps) {
           className="w-full h-80 border border-neutral-400 flex flex-col items-center justify-center 
           cursor-pointer bg-center bg-cover"
           style={{
-            backgroundImage: isBlobUrl
-              ? `url(${image})`
-              : `url(/products/${image})`
+            backgroundImage:
+              isBlobUrl || isBase64 ? `url(${image})` : `url(/${image})`
           }}></label>
         <input
           onChange={uploadImage}
