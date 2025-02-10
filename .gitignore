@@ -49,3 +49,5 @@ app/github
 app/sms
 
 /public
+
+.vercel
