@@ -2,7 +2,7 @@ import db from '@/lib/db';
 import { notFound } from 'next/navigation';
 import PostEdit from './edit-post';
 
-export const getPost = async (id: number) => {
+const getPost = async (id: number) => {
   const post = await db.post.findUnique({
     where: {
       id
