@@ -24,7 +24,7 @@ export default function ProductLayout({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (isMobile && pathname === '/products/[id]') {
+  if (isMobile) {
     return <>{children}</>;
   }
 
