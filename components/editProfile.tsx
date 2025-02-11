@@ -28,6 +28,9 @@ export default function EditProfile({
     }
   };
 
+  const isBlobUrl = avatarPreview.startsWith('blob:');
+  const isBase64 = avatarPreview.startsWith('data:image');
+
   return (
     <div className="flex items-center gap-2">
       {isEditing ? (
@@ -37,7 +40,12 @@ export default function EditProfile({
               <label
                 htmlFor="avatar"
                 className="w-full h-full flex items-center justify-center cursor-pointer bg-center bg-cover"
-                style={{ backgroundImage: `url(${avatarPreview})` }}></label>
+                style={{
+                  backgroundImage:
+                    isBlobUrl || isBase64
+                      ? `url(${avatarPreview})`
+                      : `url(/${avatarPreview})`
+                }}></label>
             </div>
             <input
               type="file"
@@ -75,7 +83,6 @@ export default function EditProfile({
               취소
             </button>
           </div>
-          <div>{state?.data.avatar?.toString()}</div>
         </form>
       ) : (
         <div className="flex flex-col items-center gap-2">
