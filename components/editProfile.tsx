@@ -2,8 +2,6 @@
 
 import editUsername from '@/app/(tabs)/profile/editProfile';
 import { useActionState, useState } from 'react';
-import Input from './input';
-import Button from './button';
 import Image from 'next/image';
 
 interface InitialUsernameProps {
@@ -21,11 +19,27 @@ export default function EditProfile({
   const [state, dispatch] = useActionState(editUsername, null);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setAvatarPreview(url);
+    const {
+      target: { files }
+    } = e;
+
+    if (!files || files.length === 0) {
+      return;
     }
+
+    const file = files[0];
+
+    if (!file.type || !file.type.startsWith('image/')) {
+      return;
+    }
+
+    const maxSize = 3 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    setAvatarPreview(url);
   };
 
   const isBlobUrl = avatarPreview.startsWith('blob:');
@@ -36,7 +50,7 @@ export default function EditProfile({
       {isEditing ? (
         <form action={dispatch} className="flex flex-col items-center gap-2">
           <div className="flex flex-col items-center">
-            <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800 cursor-pointer">
+            <div>
               <label
                 htmlFor="avatar"
                 className="w-full h-80 border border-neutral-400 flex flex-col items-center justify-center 
@@ -52,7 +66,6 @@ export default function EditProfile({
               type="file"
               name="avatar"
               id="avatar"
-              accept="image/*"
               onChange={handleAvatarChange}
               className="hidden"
             />
