@@ -6,6 +6,7 @@ import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
+  const host = request.nextUrl.origin;
   if (!code) {
     return new Response(null, { status: 400 });
   }
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
     {
       client_id: process.env.KAKAO_CLIENT_ID!,
       client_secret: process.env.KAKAO_CLIENT_SECRET!,
-      redirect_uri: process.env.KAKAO_REDIRECT_URL!,
+      redirect_uri: `${host}/kakao/complete`,
       grant_type: 'authorization_code',
       code
     }
