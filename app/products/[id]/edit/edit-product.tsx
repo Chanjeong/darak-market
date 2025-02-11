@@ -64,12 +64,12 @@ export default function ProductEdit({ product }: EditProductProps) {
             backgroundImage:
               isBlobUrl || isBase64 ? `url(${image})` : `url(/${image})`
           }}></label>
+        <input type="hidden" name="photo" value={product.photo} />
         <input
           onChange={uploadImage}
           type="file"
-          required
           id="photo"
-          name="photo"
+          name="photoFile"
           className="hidden"
         />
         <input type="hidden" name="id" value={product.id} />

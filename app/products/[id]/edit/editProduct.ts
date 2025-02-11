@@ -24,19 +24,21 @@ const productSchema = z.object({
 });
 
 export async function editProduct(_: any, formData: FormData) {
-  const data = {
-    photo: formData.get('photo'),
-    title: formData.get('title'),
-    price: formData.get('price'),
-    description: formData.get('description'),
-    id: formData.get('id')
-  };
+  const photoHidden = formData.get('photo');
+  const file = formData.get('photoFile');
+  const title = formData.get('title');
+  const price = formData.get('price');
+  const description = formData.get('description');
+  const id = formData.get('id');
 
-  if (data.photo instanceof File) {
-    const photoData = await data.photo.arrayBuffer();
+  let photo = photoHidden;
+
+  if (file instanceof File) {
+    const photoData = await file.arrayBuffer();
     const base64Image = Buffer.from(photoData).toString('base64');
-    data.photo = `data:${data.photo.type};base64,${base64Image}`;
+    photo = `data:${file.type};base64,${base64Image}`;
   }
+  const data = { title, price, description, id, photo };
   const result = productSchema.safeParse(data);
 
   if (!result.success) {
