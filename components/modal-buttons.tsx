@@ -25,7 +25,7 @@ export function ViewDetailButton() {
     <div>
       <button
         onClick={handleDetailsClick}
-        className="bg-amber-900 text-white p-3 rounded-lg hover:bg-amber-800 transition md:p-px md:text-xs">
+        className="bg-amber-900 text-white p-3 rounded-lg hover:bg-amber-800 transition sm:p-px sm:text-xs">
         자세히 보기
       </button>
     </div>

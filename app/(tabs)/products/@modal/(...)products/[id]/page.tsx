@@ -40,7 +40,7 @@ export default async function ProductModal({
       <div className="absolute top-10 right-10">
         <BackButton />
       </div>
-      <div className="modal-box p-0 overflow-hidden max-w-screen-lg min-h-[80vh] md:min-h-[50vh] rounded-lg flex justify-center w-full bg-black">
+      <div className="modal-box p-0 overflow-hidden max-w-screen-lg min-h-[80vh] sm:min-h-[50vh] rounded-lg flex justify-center w-full bg-black">
         <div className="relative w-1/2 overflow-hidden rounded-l-lg">
           <Image src={product.photo} fill alt={product.title} />
         </div>
@@ -54,13 +54,13 @@ export default async function ProductModal({
                 className="object-fit"
               />
             </div>
-            <h3 className="text-lg font-semibold md:text-xs">
+            <h3 className="text-lg font-semibold sm:text-xs">
               {product.user.username}
             </h3>
           </div>
           <div className="p-5 flex flex-col gap-5">
-            <div className="text-4xl md:text-xl">{product.title}</div>
-            <span className="text-sm text-neutral-400 md:text-xs">
+            <div className="text-4xl sm:text-xl">{product.title}</div>
+            <span className="text-sm text-neutral-400 sm:text-xs">
               {formatToTime(product.created_at.toString())}
             </span>
             <div>{product.description}</div>
