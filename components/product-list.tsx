@@ -5,11 +5,23 @@ import ListProduct from './list-product';
 import { useEffect, useRef, useState } from 'react';
 import { fetchProductPage } from '@/app/(tabs)/products/fetchProduct';
 
-interface InitialProductsProps {
-  initialProducts: InitialProducts;
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  photo: string;
+  created_at: Date;
 }
 
-export function ProductList({ initialProducts }: InitialProductsProps) {
+interface InitialProductsProps {
+  initialProducts: InitialProducts;
+  fetchProductPage: (page: number) => Promise<Product[]>;
+}
+
+export function ProductList({
+  initialProducts,
+  fetchProductPage
+}: InitialProductsProps) {
   const [products, setProducts] = useState(initialProducts);
   const [page, setPage] = useState(0);
   const trigger = useRef<HTMLSpanElement>(null);
@@ -38,7 +50,7 @@ export function ProductList({ initialProducts }: InitialProductsProps) {
     return () => {
       observer.disconnect();
     };
-  }, [page]);
+  }, [page, fetchProductPage]);
 
   return (
     <div className="p-5 flex flex-col gap-5 ">
