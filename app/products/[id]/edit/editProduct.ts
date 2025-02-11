@@ -32,7 +32,7 @@ export async function editProduct(_: any, formData: FormData) {
   const id = formData.get('id');
 
   let photo = photoHidden;
-  if (file instanceof File) {
+  if (file instanceof File && file.size > 0) {
     const photoData = await file.arrayBuffer();
     const base64Image = Buffer.from(photoData).toString('base64');
     photo = `data:${file.type};base64,${base64Image}`;
