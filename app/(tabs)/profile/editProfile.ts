@@ -25,16 +25,18 @@ const profileSchema = z.object({
 });
 
 export default async function editProfile(_: any, formData: FormData) {
-  const data = {
-    username: formData.get('username'),
-    avatar: formData.get('avatar')
-  };
+  const username = formData.get('username');
+  const avatarHidden = formData.get('avatar');
+  const file = formData.get('avatarFile');
 
-  if (data.avatar instanceof File) {
-    const avatarData = await data.avatar.arrayBuffer();
+  let avatar = avatarHidden;
+  if (file instanceof File && file.size > 0) {
+    const avatarData = await file.arrayBuffer();
     const base64Avatar = Buffer.from(avatarData).toString('base64');
-    data.avatar = `data:${data.avatar.type};base64,${base64Avatar}`;
+    avatar = `data:${file.type};base64,${base64Avatar}`;
   }
+
+  const data = { username, avatar };
 
   const result = profileSchema.safeParse(data);
 

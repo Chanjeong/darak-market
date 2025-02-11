@@ -62,14 +62,14 @@ export default function EditProfile({
                       : `url(${initialAvatar})`
                 }}></label>
             </div>
+            <input type="hidden" name="avatar" value={initialAvatar} />
             <input
               type="file"
-              name="avatar"
+              name="avatarFile"
               id="avatar"
               onChange={handleAvatarChange}
               className="hidden"
             />
-            <input type="hidden" name="avatar" value={initialAvatar} />
           </div>
           <div className="flex gap-2">
             <div className="flex flex-col">
@@ -98,7 +98,7 @@ export default function EditProfile({
               취소
             </button>
           </div>
-          <div>{state?.data.avatar?.toString()}</div>
+          <div>{state?.data.avatar!.toString()}</div>
         </form>
       ) : (
         <div className="flex flex-col items-center gap-2">
