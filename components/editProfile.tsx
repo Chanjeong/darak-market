@@ -31,12 +31,12 @@ export default function EditProfile({
   return (
     <div className="flex items-center gap-2">
       {isEditing ? (
-        <form action={dispatch} className="flex flex-col items-start gap-2">
+        <form action={dispatch} className="flex flex-col items-center gap-2">
           <div className="flex flex-col items-center">
             <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800 cursor-pointer">
               <label
                 htmlFor="avatar"
-                className="w-full h-full flex items-center justify-center"
+                className="w-full h-full flex items-center justify-center cursor-pointer bg-center bg-cover"
                 style={{ backgroundImage: `url(${avatarPreview})` }}></label>
             </div>
             <input
@@ -75,6 +75,7 @@ export default function EditProfile({
               취소
             </button>
           </div>
+          <div>{state?.data.avatar?.toString()}</div>
         </form>
       ) : (
         <div className="flex flex-col items-center gap-2">

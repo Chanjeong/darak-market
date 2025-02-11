@@ -25,22 +25,24 @@ const profileSchema = z.object({
 });
 
 export default async function editUsername(_: any, formData: FormData) {
-  const username = formData.get('username');
-  const avatar = formData.get('avatar');
+  const data = {
+    username: formData.get('username'),
+    avatar: formData.get('avatar')
+  };
 
-  const result = await profileSchema.safeParseAsync({ username, avatar });
+  const result = await profileSchema.safeParseAsync(data);
 
   if (!result.success) {
     return {
       error: result.error.flatten(),
-      username
+      data: data
     };
   } else {
     let avatarUrl: string | undefined;
-    if (avatar instanceof File && avatar.size > 0) {
-      const avatarData = await avatar.arrayBuffer();
+    if (data.avatar instanceof File && data.avatar.size > 0) {
+      const avatarData = await data.avatar.arrayBuffer();
       const base64Avatar = Buffer.from(avatarData).toString('base64');
-      avatarUrl = `data:${avatar.type};base64,${base64Avatar}`;
+      avatarUrl = `data:${data.avatar.type};base64,${base64Avatar}`;
     }
     const session = await getSession();
     await db.user.update({
