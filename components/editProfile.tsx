@@ -50,14 +50,16 @@ export default function EditProfile({
       {isEditing ? (
         <form action={dispatch} className="flex flex-col items-center gap-2">
           <div className="flex flex-col items-center">
-            <div className="w-full h-full flex items-center justify-center border-neutral-400">
+            <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800">
               <label
                 htmlFor="avatar"
-                className="w-full h-80 border border-neutral-400 flex flex-col items-center justify-center 
+                className="w-full h-full border border-neutral-400 flex flex-col items-center justify-center 
           cursor-pointer bg-center bg-cover"
                 style={{
                   backgroundImage:
-                    isBlobUrl || isBase64 ? `url(${avatarPreview})` : ''
+                    isBlobUrl || isBase64
+                      ? `url(${avatarPreview})`
+                      : `url(${initialAvatar})`
                 }}></label>
             </div>
             <input

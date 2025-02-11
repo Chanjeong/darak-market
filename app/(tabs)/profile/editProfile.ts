@@ -30,6 +30,12 @@ export default async function editUsername(_: any, formData: FormData) {
     avatar: formData.get('avatar')
   };
 
+  if (data.avatar instanceof File) {
+    const avatarData = await data.avatar.arrayBuffer();
+    const base64Avatar = Buffer.from(avatarData).toString('base64');
+    data.avatar = `data:${data.avatar.type};base64,${base64Avatar}`;
+  }
+
   const result = profileSchema.safeParse(data);
 
   if (!result.success) {
@@ -38,11 +44,6 @@ export default async function editUsername(_: any, formData: FormData) {
       data: data
     };
   } else {
-    if (data.avatar instanceof File && data.avatar.size > 0) {
-      const avatarData = await data.avatar.arrayBuffer();
-      const base64Avatar = Buffer.from(avatarData).toString('base64');
-      data.avatar = `data:${data.avatar.type};base64,${base64Avatar}`;
-    }
     const session = await getSession();
     await db.user.update({
       where: {
