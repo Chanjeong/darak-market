@@ -83,9 +83,7 @@ export default async function Profile() {
             </button>
           </form>
           <form action={deleteUser}>
-            <button
-              type="button"
-              className="py-2 px-6 bg-red-600 rounded hover:bg-red-500 transition">
+            <button className="py-2 px-6 bg-red-600 rounded hover:bg-red-500 transition">
               회원탈퇴
             </button>
           </form>

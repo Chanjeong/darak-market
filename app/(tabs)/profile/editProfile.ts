@@ -29,11 +29,16 @@ export default async function editUsername(_: any, formData: FormData) {
     username: formData.get('username'),
     avatar: formData.get('avatar')
   };
-
-  if (data.avatar instanceof File) {
-    const avatarData = await data.avatar.arrayBuffer();
-    const base64Avatar = Buffer.from(avatarData).toString('base64');
-    data.avatar = `data:${data.avatar.type};base64,${base64Avatar}`;
+  const session = await getSession();
+  if (!data.avatar || data.avatar === 'null') {
+    const user = await db.user.findUnique({ where: { id: session.id } });
+    data.avatar = user?.avatar ?? '';
+  } else {
+    if (data.avatar instanceof File) {
+      const avatarData = await data.avatar.arrayBuffer();
+      const base64Avatar = Buffer.from(avatarData).toString('base64');
+      data.avatar = `data:${data.avatar.type};base64,${base64Avatar}`;
+    }
   }
 
   const result = profileSchema.safeParse(data);
@@ -44,7 +49,6 @@ export default async function editUsername(_: any, formData: FormData) {
       data: data
     };
   } else {
-    const session = await getSession();
     await db.user.update({
       where: {
         id: session.id
