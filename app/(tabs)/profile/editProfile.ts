@@ -18,7 +18,7 @@ const checkUsernameUnique = async (username: string) => {
   return !Boolean(user);
 };
 
-const usernameSchema = z.object({
+const profileSchema = z.object({
   username: z
     .string({
       invalid_type_error: TYPE_ERROR,
@@ -31,13 +31,17 @@ const usernameSchema = z.object({
       /^[a-zA-Z0-9가-힣\s]*$/,
       '사용자 이름에 특수문자는 사용할 수 없습니다.'
     )
-    .refine(checkUsernameUnique, CHECKUNIQUE)
+    .refine(checkUsernameUnique, CHECKUNIQUE),
+  avatar: z
+    .string({ required_error: REQUIRED_ERROR })
+    .min(1, '사진은 필수입니다')
 });
 
 export default async function editUsername(_: any, formData: FormData) {
   const username = formData.get('username');
+  const avatar = formData.get('avatar');
 
-  const result = await usernameSchema.safeParseAsync({ username });
+  const result = await profileSchema.safeParseAsync({ username, avatar });
 
   if (!result.success) {
     return {
@@ -45,13 +49,20 @@ export default async function editUsername(_: any, formData: FormData) {
       username
     };
   } else {
+    let avatarUrl: string | undefined;
+    if (avatar instanceof File && avatar.size > 0) {
+      const avatarData = await avatar.arrayBuffer();
+      const base64Avatar = Buffer.from(avatarData).toString('base64');
+      avatarUrl = `data:${avatar.type};base64,${base64Avatar}`;
+    }
     const session = await getSession();
     await db.user.update({
       where: {
         id: session.id
       },
       data: {
-        username: result.data.username
+        username: result.data.username,
+        avatar: result.data.avatar
       }
     });
     redirect('/profile');

@@ -1,25 +1,57 @@
 'use client';
 
-import editUsername from '@/app/(tabs)/profile/editUsername';
+import editUsername from '@/app/(tabs)/profile/editProfile';
 import { useActionState, useState } from 'react';
 import Input from './input';
 import Button from './button';
+import Image from 'next/image';
 
 interface InitialUsernameProps {
   initialUsername: string;
+  initialAvatar: string;
 }
 
-export default function EditUsername({
-  initialUsername
+export default function EditProfile({
+  initialUsername,
+  initialAvatar
 }: InitialUsernameProps) {
+  const [avatarPreview, setAvatarPreview] = useState(initialAvatar);
   const [username, setUsername] = useState(initialUsername);
   const [isEditing, setIsEditing] = useState(false);
   const [state, dispatch] = useActionState(editUsername, null);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setAvatarPreview(url);
+    }
+  };
 
   return (
     <div className="flex items-center gap-2">
       {isEditing ? (
         <form action={dispatch} className="flex items-start gap-2">
+          <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800 cursor-pointer">
+            <label
+              htmlFor="avatar"
+              className="w-full h-full flex items-center justify-center">
+              <Image
+                src={avatarPreview}
+                alt="Avatar"
+                fill
+                className="object-cover"
+              />
+            </label>
+          </div>
+          <input
+            type="file"
+            name="avatar"
+            id="avatar"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            className="hidden"
+          />
           <div className="flex flex-col">
             <input
               name="username"
@@ -40,20 +72,31 @@ export default function EditUsername({
             onClick={() => {
               setIsEditing(false);
               setUsername(initialUsername);
+              setAvatarPreview(initialAvatar);
             }}
             className="text-sm text-red-500">
             취소
           </button>
         </form>
       ) : (
-        <>
+        <div className="flex flex-col items-center gap-2">
+          <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800">
+            {avatarPreview && (
+              <Image
+                src={avatarPreview}
+                alt={username}
+                fill
+                className="object-cover"
+              />
+            )}
+          </div>
           <span className="text-2xl font-bold text-white">{username}</span>
           <button
             onClick={() => setIsEditing(true)}
             className="text-sm text-amber-300 hover:underline">
             수정
           </button>
-        </>
+        </div>
       )}
     </div>
   );

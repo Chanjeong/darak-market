@@ -1,4 +1,5 @@
-import EditUsername from '@/components/editUsername';
+import EditProfile from '@/components/editProfile';
+import EditUsername from '@/components/editProfile';
 import db from '@/lib/db';
 import getSession from '@/lib/session';
 import Image from 'next/image';
@@ -43,17 +44,10 @@ export default async function Profile() {
   return (
     <div className="flex items-center justify-center pt-10">
       <div className="flex flex-col items-center gap-6 bg-neutral-800 border border-amber-500 px-12 py-10 rounded-lg shadow-lg">
-        <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800">
-          {user?.avatar && (
-            <Image
-              src={user.avatar}
-              alt={user.username}
-              fill
-              className="object-cover"
-            />
-          )}
-        </div>
-        <EditUsername initialUsername={user!.username} />
+        <EditProfile
+          initialUsername={user!.username}
+          initialAvatar={user!.avatar || ''}
+        />
         <div className="flex flex-col gap-3 w-full">
           {user?.password ? (
             <Link

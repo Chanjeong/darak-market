@@ -8,7 +8,7 @@ export default function ProductLayout({
   return (
     <div>
       {children}
-      {modal}
+      <div className="hidden md:block">{modal}</div>
     </div>
   );
 }
