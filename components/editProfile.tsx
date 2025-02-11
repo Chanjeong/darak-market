@@ -1,8 +1,8 @@
 'use client';
 
-import editUsername from '@/app/(tabs)/profile/editProfile';
 import { useActionState, useState } from 'react';
 import Image from 'next/image';
+import editProfile from '@/app/(tabs)/profile/editProfile';
 
 interface InitialUsernameProps {
   initialUsername: string;
@@ -16,7 +16,7 @@ export default function EditProfile({
   const [avatarPreview, setAvatarPreview] = useState(initialAvatar);
   const [username, setUsername] = useState(initialUsername);
   const [isEditing, setIsEditing] = useState(false);
-  const [state, dispatch] = useActionState(editUsername, null);
+  const [state, dispatch] = useActionState(editProfile, null);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -69,6 +69,7 @@ export default function EditProfile({
               onChange={handleAvatarChange}
               className="hidden"
             />
+            <input type="hidden" name="avatar" value={initialAvatar} />
           </div>
           <div className="flex gap-2">
             <div className="flex flex-col">
