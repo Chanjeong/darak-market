@@ -6,18 +6,6 @@ import getSession from '@/lib/session';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
-const checkUsernameUnique = async (username: string) => {
-  const user = await db.user.findUnique({
-    where: {
-      username
-    },
-    select: {
-      id: true
-    }
-  });
-  return !Boolean(user);
-};
-
 const profileSchema = z.object({
   username: z
     .string({
@@ -30,8 +18,7 @@ const profileSchema = z.object({
     .regex(
       /^[a-zA-Z0-9가-힣\s]*$/,
       '사용자 이름에 특수문자는 사용할 수 없습니다.'
-    )
-    .refine(checkUsernameUnique, CHECKUNIQUE),
+    ),
   avatar: z
     .string({ required_error: REQUIRED_ERROR })
     .min(1, '사진은 필수입니다')

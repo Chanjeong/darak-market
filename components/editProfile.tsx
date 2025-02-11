@@ -31,52 +31,50 @@ export default function EditProfile({
   return (
     <div className="flex items-center gap-2">
       {isEditing ? (
-        <form action={dispatch} className="flex items-start gap-2">
-          <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800 cursor-pointer">
-            <label
-              htmlFor="avatar"
-              className="w-full h-full flex items-center justify-center">
-              <Image
-                src={avatarPreview}
-                alt="Avatar"
-                fill
-                className="object-cover"
-              />
-            </label>
-          </div>
-          <input
-            type="file"
-            name="avatar"
-            id="avatar"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            className="hidden"
-          />
-          <div className="flex flex-col">
+        <form action={dispatch} className="flex flex-col items-start gap-2">
+          <div className="flex flex-col items-center">
+            <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800 cursor-pointer">
+              <label
+                htmlFor="avatar"
+                className="w-full h-full flex items-center justify-center"
+                style={{ backgroundImage: `url(${avatarPreview})` }}></label>
+            </div>
             <input
-              name="username"
-              type="text"
-              defaultValue={username}
-              onChange={e => setUsername(e.target.value)}
-              className="px-2 py-1 rounded border w-40 text-black"
+              type="file"
+              name="avatar"
+              id="avatar"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="hidden"
             />
-            {state?.error.fieldErrors.username && (
-              <p className="text-red-500 text-sm">
-                {state?.error.fieldErrors.username}
-              </p>
-            )}
           </div>
-          <button className="text-sm ">저장</button>
-          <button
-            type="button"
-            onClick={() => {
-              setIsEditing(false);
-              setUsername(initialUsername);
-              setAvatarPreview(initialAvatar);
-            }}
-            className="text-sm text-red-500">
-            취소
-          </button>
+          <div className="flex gap-2">
+            <div className="flex flex-col">
+              <input
+                name="username"
+                type="text"
+                defaultValue={username}
+                onChange={e => setUsername(e.target.value)}
+                className="px-2 py-1 rounded border w-40 text-black"
+              />
+              {state?.error.fieldErrors.username && (
+                <p className="text-red-500 text-sm">
+                  {state?.error.fieldErrors.username}
+                </p>
+              )}
+            </div>
+            <button className="text-sm ">저장</button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsEditing(false);
+                setUsername(initialUsername);
+                setAvatarPreview(initialAvatar);
+              }}
+              className="text-sm text-red-500">
+              취소
+            </button>
+          </div>
         </form>
       ) : (
         <div className="flex flex-col items-center gap-2">
@@ -90,12 +88,14 @@ export default function EditProfile({
               />
             )}
           </div>
-          <span className="text-2xl font-bold text-white">{username}</span>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="text-sm text-amber-300 hover:underline">
-            수정
-          </button>
+          <div className="flex gap-2">
+            <span className="text-2xl font-bold text-white">{username}</span>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="text-sm text-amber-300 hover:underline">
+              수정
+            </button>
+          </div>
         </div>
       )}
     </div>
