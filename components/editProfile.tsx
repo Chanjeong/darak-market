@@ -39,7 +39,8 @@ export default function EditProfile({
             <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-amber-800 cursor-pointer">
               <label
                 htmlFor="avatar"
-                className="w-full h-full flex items-center justify-center cursor-pointer bg-center bg-cover"
+                className="w-full h-80 border border-neutral-400 flex flex-col items-center justify-center 
+          cursor-pointer bg-center bg-cover"
                 style={{
                   backgroundImage:
                     isBlobUrl || isBase64
@@ -83,6 +84,7 @@ export default function EditProfile({
               취소
             </button>
           </div>
+          <div>{state?.data.avatar?.toString()}</div>
         </form>
       ) : (
         <div className="flex flex-col items-center gap-2">
