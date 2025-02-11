@@ -68,12 +68,11 @@ const getLikeStatus = async (postId: number, userId: number) => {
 };
 
 async function getCachedLikeStatus(postId: number, userId: number) {
+  const cacheKey = `like-status-${postId}-${userId}`;
   const cachedOperation = unstable_cache(
     postId => getLikeStatus(postId, userId),
-    [`like-status-${postId}`],
-    {
-      tags: [`like-status-${postId}`]
-    }
+    [cacheKey],
+    { tags: [cacheKey] }
   );
   return cachedOperation(postId);
 }

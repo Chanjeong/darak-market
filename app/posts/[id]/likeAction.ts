@@ -13,7 +13,7 @@ export const likePost = async (postId: number) => {
         userId: session.id!
       }
     });
-    revalidateTag(`like-status-${postId}`);
+    revalidateTag(`like-status-${postId}-${session.id}`);
   } catch (e) {}
 };
 
@@ -28,6 +28,6 @@ export const dislikePost = async (postId: number) => {
         }
       }
     });
-    revalidateTag(`like-status-${postId}`);
+    revalidateTag(`like-status-${postId}-${session.id}`);
   } catch (e) {}
 };
