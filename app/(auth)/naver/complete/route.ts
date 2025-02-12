@@ -7,6 +7,7 @@ import { NextRequest } from 'next/server';
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
   const state = request.nextUrl.searchParams.get('state')!;
+  const host = request.nextUrl.origin;
 
   if (!code) {
     return new Response(null, { status: 400 });
@@ -16,6 +17,7 @@ export async function GET(request: NextRequest) {
     {
       client_id: process.env.NAVER_CLIENT_ID!,
       client_secret: process.env.NAVER_CLIENT_SECRET!,
+      redirect_uri: `${host}/naver/complete`,
       grant_type: 'authorization_code',
       code,
       state
